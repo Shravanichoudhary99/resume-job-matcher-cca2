@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 
 from services.pdf_extractor import extract_text_from_pdf
 from services.skill_extractor import extract_skills
 from services.matcher import match_skills
+
 
 app = Flask(__name__)
 
@@ -10,6 +11,25 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     return render_template("index.html")
+
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/skills", methods=["POST"])
+def api_skills():
+    data = request.get_json()
+
+    if not data or not data.get("text"):
+        return jsonify({"error": "Text is required"}), 400
+
+    skills = extract_skills(data["text"])
+
+    return jsonify({
+        "skills": skills
+    })
 
 
 @app.route("/analyze", methods=["POST"])
@@ -59,8 +79,13 @@ def compare():
     results = []
 
     for i in range(1, 4):
-        job_title = request.form.get(f"job{i}_title", "").strip()
-        job_description = request.form.get(f"job{i}", "").strip()
+        job_title = request.form.get(
+            f"job{i}_title", ""
+        ).strip()
+
+        job_description = request.form.get(
+            f"job{i}", ""
+        ).strip()
 
         if not job_description:
             continue
@@ -72,14 +97,11 @@ def compare():
             job_skills
         )
 
-      
-
         results.append({
             "title": job_title or f"Job {i}",
             "match_percentage": analysis["match_percentage"],
             "matched_skills": analysis["matched"],
-            "missing_skills": analysis["missing"],
-           
+            "missing_skills": analysis["missing"]
         })
 
     if not results:
