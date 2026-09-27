@@ -33,11 +33,12 @@ def analyze():
 
     analysis = match_skills(resume_skills, job_skills)
 
-    return (
-        f"Resume received: {resume.filename}<br><br>"
-        f"Matched skills: {analysis['matched']}<br>"
-        f"Missing skills: {analysis['missing']}<br>"
-        f"Match percentage: {analysis['match_percentage']}%"
+    return render_template(
+        "result.html",
+        resume_filename=resume.filename,
+        matched_skills=analysis["matched"],
+        missing_skills=analysis["missing"],
+        match_percentage=analysis["match_percentage"]
     )
 
 
