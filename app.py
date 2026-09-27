@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Flask, jsonify, render_template, request
@@ -8,6 +9,25 @@ from services.matcher import match_skills
 
 
 app = Flask(__name__)
+
+
+DATA_FILE = "data/analyses.json"
+
+
+def load_analyses():
+    if not os.path.exists(DATA_FILE):
+        return []
+
+    with open(DATA_FILE, "r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def save_analysis(analysis):
+    analyses = load_analyses()
+    analyses.append(analysis)
+
+    with open(DATA_FILE, "w", encoding="utf-8") as file:
+        json.dump(analyses, file, indent=2)
 
 
 @app.context_processor
@@ -22,7 +42,11 @@ def inject_commit_id():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    analyses = load_analyses()
+    return render_template(
+        "index.html",
+        analyses=analyses
+    )
 
 
 @app.route("/health")
@@ -69,6 +93,13 @@ def analyze():
     job_skills = extract_skills(job_description)
 
     analysis = match_skills(resume_skills, job_skills)
+
+    save_analysis({
+        "resume_filename": resume.filename,
+        "match_percentage": analysis["match_percentage"],
+        "matched_skills": analysis["matched"],
+        "missing_skills": analysis["missing"]
+    })
 
     return render_template(
         "result.html",
@@ -127,6 +158,11 @@ def compare():
     if not results:
         return "Please enter at least one job description.", 400
 
+    save_analysis({
+        "resume_filename": resume.filename,
+        "jobs": results
+    })
+
     return render_template(
         "compare_result.html",
         resume_filename=resume.filename,
@@ -135,8 +171,10 @@ def compare():
 
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+
     app.run(
         host="0.0.0.0",
-        port=5000,
+        port=port,
         debug=True
     )
