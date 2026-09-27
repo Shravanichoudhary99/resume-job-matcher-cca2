@@ -9,12 +9,15 @@
 
     <h1>Resume Job Matcher</h1>
 
-    <p>Upload your resume and enter a job description to analyze your skills.</p>
+    <p>
+        Compare your resume against multiple job descriptions.
+    </p>
 
-    <form action="/analyze" method="POST" enctype="multipart/form-data">
+    <form action="/compare" method="POST" enctype="multipart/form-data">
 
         <label for="resume">Upload Resume (PDF):</label>
         <br>
+
         <input
             type="file"
             id="resume"
@@ -25,20 +28,90 @@
 
         <br><br>
 
-        <label for="job_description">Job Description:</label>
+        <h2>Job 1</h2>
+
+        <label for="job1_title">Job Title:</label>
         <br>
+
+        <input
+            type="text"
+            id="job1_title"
+            name="job1_title"
+            placeholder="e.g. Python Developer"
+            required
+        >
+
+        <br><br>
+
+        <label for="job1">Job Description:</label>
+        <br>
+
         <textarea
-            id="job_description"
-            name="job_description"
-            rows="10"
+            id="job1"
+            name="job1"
+            rows="8"
             cols="60"
-            placeholder="Paste the job description here..."
+            placeholder="Paste the first job description here..."
             required
         ></textarea>
 
         <br><br>
 
-        <button type="submit">Analyze Resume</button>
+        <h2>Job 2</h2>
+
+        <label for="job2_title">Job Title:</label>
+        <br>
+
+        <input
+            type="text"
+            id="job2_title"
+            name="job2_title"
+            placeholder="e.g. Data Analyst"
+        >
+
+        <br><br>
+
+        <label for="job2">Job Description:</label>
+        <br>
+
+        <textarea
+            id="job2"
+            name="job2"
+            rows="8"
+            cols="60"
+            placeholder="Paste the second job description here..."
+        ></textarea>
+
+        <br><br>
+
+        <h2>Job 3</h2>
+
+        <label for="job3_title">Job Title:</label>
+        <br>
+
+        <input
+            type="text"
+            id="job3_title"
+            name="job3_title"
+            placeholder="e.g. Frontend Developer"
+        >
+
+        <br><br>
+
+        <label for="job3">Job Description:</label>
+        <br>
+
+        <textarea
+            id="job3"
+            name="job3"
+            rows="8"
+            cols="60"
+            placeholder="Paste the third job description here..."
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">Compare Jobs</button>
 
     </form>
 
