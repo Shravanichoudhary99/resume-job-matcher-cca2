@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 
 from services.pdf_extractor import extract_text_from_pdf
+from services.skill_extractor import extract_skills
 
 app = Flask(__name__)
 
@@ -26,9 +27,13 @@ def analyze():
     if not resume_text:
         return "Could not extract text from the PDF", 400
 
+    resume_skills = extract_skills(resume_text)
+    job_skills = extract_skills(job_description)
+
     return (
         f"Resume received: {resume.filename}<br><br>"
-        f"Extracted text:<br><pre>{resume_text}</pre>"
+        f"Resume skills:<br><pre>{resume_skills}</pre><br>"
+        f"Job description skills:<br><pre>{job_skills}</pre>"
     )
 
 
