@@ -42,6 +42,56 @@ def analyze():
     )
 
 
+@app.route("/compare", methods=["POST"])
+def compare():
+    resume = request.files.get("resume")
+
+    if not resume:
+        return "Resume is required", 400
+
+    resume_text = extract_text_from_pdf(resume)
+
+    if not resume_text:
+        return "Could not extract text from the PDF", 400
+
+    resume_skills = extract_skills(resume_text)
+
+    results = []
+
+    for i in range(1, 4):
+        job_title = request.form.get(f"job{i}_title", "").strip()
+        job_description = request.form.get(f"job{i}", "").strip()
+
+        if not job_description:
+            continue
+
+        job_skills = extract_skills(job_description)
+
+        analysis = match_skills(
+            resume_skills,
+            job_skills
+        )
+
+      
+
+        results.append({
+            "title": job_title or f"Job {i}",
+            "match_percentage": analysis["match_percentage"],
+            "matched_skills": analysis["matched"],
+            "missing_skills": analysis["missing"],
+           
+        })
+
+    if not results:
+        return "Please enter at least one job description.", 400
+
+    return render_template(
+        "compare_result.html",
+        resume_filename=resume.filename,
+        results=results
+    )
+
+
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Comparison Results</title>
+</head>
+<body>
+
+    <h1>Job Comparison Results</h1>
+
+    <p>
+        <strong>Resume:</strong> {{ resume_filename }}
+    </p>
+
+    <hr>
+
+    {% for job in results %}
+
+        <h2>{{ job.title }}</h2>
+
+        <h3>Match Percentage</h3>
+
+        <h1>{{ job.match_percentage }}%</h1>
+
+        <h3>Matched Skills</h3>
+
+        {% if job.matched_skills %}
+            <ul>
+                {% for skill in job.matched_skills %}
+                    <li>✓ {{ skill }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No matching skills found.</p>
+        {% endif %}
+
+        <h3>Missing Skills</h3>
+
+        {% if job.missing_skills %}
+            <ul>
+                {% for skill in job.missing_skills %}
+                    <li>✗ {{ skill }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No missing skills.</p>
+        {% endif %}
+
+        <hr>
+
+    {% endfor %}
+
+    <a href="/">Compare More Jobs</a>
+
+</body>
+</html>
