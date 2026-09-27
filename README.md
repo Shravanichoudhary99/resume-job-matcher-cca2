@@ -4,9 +4,9 @@
 
 ResumeMatch is a Flask-based web application that analyzes a candidate's resume against one or more job descriptions.
 
-The application extracts text from a PDF resume, identifies technical and professional skills, compares them with the skills required by a job description, and displays the matching and missing skills.
+The application extracts text from a PDF resume, identifies technical and professional skills, compares them with the skills required by job descriptions, and displays matching and missing skills.
 
-The system also allows the same resume to be compared with multiple job descriptions.
+The system also allows the same resume to be compared with multiple job descriptions and saves completed analyses for later viewing.
 
 ## Problem Statement
 
@@ -15,11 +15,12 @@ Job seekers often need to compare their resumes with different job requirements.
 ResumeMatch provides a simple web-based solution to:
 
 - Extract skills from a resume PDF
-- Identify skills required by a job description
+- Identify skills required by job descriptions
 - Calculate a skill match percentage
 - Display matched skills
 - Display missing skills
 - Compare one resume with multiple job descriptions
+- Save completed analyses
 - Provide a JSON API for skill extraction
 - Provide a health-check endpoint for deployment monitoring
 
@@ -31,7 +32,9 @@ Users can upload their resume in PDF format.
 
 ### 2. Job Description Analysis
 
-Users can enter a job description and compare it with their resume.
+Users can enter job descriptions and compare them with their resume.
+
+The application supports up to three job descriptions for one resume.
 
 ### 3. Skill Extraction
 
@@ -58,15 +61,32 @@ The application calculates:
 
 A single resume can be compared against multiple job descriptions to understand how well it matches different opportunities.
 
-### 6. JSON API
+### 6. Saved Analyses
+
+Completed resume and job analyses are saved in a JSON data file.
+
+The homepage displays recent saved analyses, including:
+
+- Resume filename
+- Job title
+- Match percentage
+- Matched skills
+- Missing skills
+
+### 7. JSON API
 
 The `/api/skills` endpoint accepts text and returns the detected skills as JSON.
 
-### 7. Health Check
-
-The `/health` endpoint returns:
+Example:
 
 ```json
 {
-  "status": "ok"
+  "skills": {
+    "Programming": [
+      "Python"
+    ],
+    "Frameworks and Libraries": [
+      "Flask"
+    ]
+  }
 }
