@@ -22,7 +22,7 @@ def health():
 def api_skills():
     data = request.get_json()
 
-    if not data or not data.get("text"):
+    if not data or not data.get("text", "").strip():
         return jsonify({"error": "Text is required"}), 400
 
     skills = extract_skills(data["text"])
@@ -35,10 +35,15 @@ def api_skills():
 @app.route("/analyze", methods=["POST"])
 def analyze():
     resume = request.files.get("resume")
-    job_description = request.form.get("job_description")
+    job_description = request.form.get(
+        "job_description", ""
+    ).strip()
 
-    if not resume:
+    if not resume or not resume.filename:
         return "Resume is required", 400
+
+    if not resume.filename.lower().endswith(".pdf"):
+        return "Only PDF files are allowed", 400
 
     if not job_description:
         return "Job description is required", 400
@@ -66,8 +71,11 @@ def analyze():
 def compare():
     resume = request.files.get("resume")
 
-    if not resume:
+    if not resume or not resume.filename:
         return "Resume is required", 400
+
+    if not resume.filename.lower().endswith(".pdf"):
+        return "Only PDF files are allowed", 400
 
     resume_text = extract_text_from_pdf(resume)
 
