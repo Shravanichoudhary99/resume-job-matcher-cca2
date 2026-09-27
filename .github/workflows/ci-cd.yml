@@ -64,3 +64,16 @@ jobs:
         if: always()
         run: |
           docker stop resume-job-matcher || true
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Deploy to Render
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          curl --fail --request POST "${RENDER_DEPLOY_HOOK}&ref=${GITHUB_SHA}"
