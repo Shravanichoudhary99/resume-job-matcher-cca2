@@ -288,6 +288,68 @@
             transform: translateY(-1px);
         }
 
+        /* SAVED ANALYSES */
+
+        .saved-analyses {
+            margin-bottom: 60px;
+        }
+
+        .saved-analyses-header {
+            margin-bottom: 20px;
+        }
+
+        .saved-analyses-header h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .saved-analyses-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .analysis-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .analysis-card {
+            background: #0e1320;
+            border: 1px solid #20283a;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .analysis-card h3 {
+            font-size: 16px;
+            margin-bottom: 14px;
+            color: #f8fafc;
+        }
+
+        .analysis-card p {
+            color: #94a3b8;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .analysis-card strong {
+            color: #818cf8;
+        }
+
+        .saved-job {
+            border-top: 1px solid #20283a;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .saved-job h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
         /* FOOTER */
 
         footer {
@@ -329,6 +391,10 @@
 
             button {
                 width: 100%;
+            }
+
+            .analysis-list {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -582,6 +648,99 @@
         </div>
 
     </form>
+
+
+    <!-- SAVED ANALYSES -->
+
+    <section class="saved-analyses">
+
+        <div class="saved-analyses-header">
+
+            <h2>
+                Recent Analyses
+            </h2>
+
+            <p>
+                Your completed resume and job matching analyses.
+            </p>
+
+        </div>
+
+
+        {% if analyses %}
+
+            <div class="analysis-list">
+
+                {% for analysis in analyses %}
+
+                    <div class="analysis-card">
+
+                        <h3>
+                            {{ analysis.resume_filename }}
+                        </h3>
+
+
+                        {% if analysis.jobs %}
+
+                            {% for job in analysis.jobs %}
+
+                                <div class="saved-job">
+
+                                    <h4>
+                                        {{ job.title }}
+                                    </h4>
+
+                                    <p>
+                                        Match Score:
+                                        <strong>
+                                            {{ job.match_percentage }}%
+                                        </strong>
+                                    </p>
+
+                                    <p>
+                                        Matched Skills:
+                                        {{ job.matched_skills | join(", ") if job.matched_skills else "None" }}
+                                    </p>
+
+                                    <p>
+                                        Missing Skills:
+                                        {{ job.missing_skills | join(", ") if job.missing_skills else "None" }}
+                                    </p>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>
+                                No job results available.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <div class="analysis-card">
+
+                <p>
+                    No analyses saved yet. Analyze a resume to see your
+                    results here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
 
 </main>
 

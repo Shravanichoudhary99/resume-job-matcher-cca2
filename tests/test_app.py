@@ -4,11 +4,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import app  # noqa: E402
+import app as app_module  # noqa: E402
 
 
 def test_health():
-    client = app.test_client()
+    client = app_module.app.test_client()
 
     response = client.get("/health")
 
@@ -17,13 +17,11 @@ def test_health():
 
 
 def test_skills_api():
-    client = app.test_client()
+    client = app_module.app.test_client()
 
     response = client.post(
         "/api/skills",
-        json={
-            "text": "Python Flask Docker Git"
-        }
+        json={"text": "Python Flask Docker Git"}
     )
 
     assert response.status_code == 200
@@ -36,20 +34,18 @@ def test_skills_api():
 
 
 def test_skills_api_empty_input():
-    client = app.test_client()
+    client = app_module.app.test_client()
 
     response = client.post(
         "/api/skills",
-        json={
-            "text": "   "
-        }
+        json={"text": "   "}
     )
 
     assert response.status_code == 400
 
 
 def test_invalid_resume():
-    client = app.test_client()
+    client = app_module.app.test_client()
 
     response = client.post(
         "/compare",
@@ -66,3 +62,43 @@ def test_invalid_resume():
     assert response.get_data(as_text=True) == (
         "Only PDF files are allowed"
     )
+
+
+def test_adding_data(tmp_path, monkeypatch):
+    data_file = tmp_path / "analyses.json"
+
+    monkeypatch.setattr(
+        app_module,
+        "DATA_FILE",
+        str(data_file)
+    )
+
+    monkeypatch.setattr(
+        app_module,
+        "extract_text_from_pdf",
+        lambda _: "Python Flask Docker"
+    )
+
+    client = app_module.app.test_client()
+
+    response = client.post(
+        "/compare",
+        data={
+            "resume": (
+                BytesIO(b"fake pdf"),
+                "resume.pdf"
+            ),
+            "job1_title": "Python Developer",
+            "job1": "Python Flask Docker"
+        },
+        content_type="multipart/form-data"
+    )
+
+    assert response.status_code == 200
+
+    saved = app_module.load_analyses()
+
+    assert len(saved) == 1
+    assert saved[0]["resume_filename"] == "resume.pdf"
+    assert len(saved[0]["jobs"]) == 1
+    assert saved[0]["jobs"][0]["match_percentage"] == 100.0
