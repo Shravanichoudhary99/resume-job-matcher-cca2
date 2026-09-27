@@ -3,117 +3,592 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Job Matcher</title>
+
+    <title>ResumeMatch</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #080b14;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            height: 76px;
+            border-bottom: 1px solid #1c2333;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-content {
+            width: 92%;
+            max-width: 1150px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #6366f1;
+        }
+
+        .nav-badge {
+            font-size: 13px;
+            color: #94a3b8;
+            border: 1px solid #263047;
+            padding: 7px 12px;
+            border-radius: 20px;
+        }
+
+        /* HERO */
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 55px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 6vw, 68px);
+            line-height: 1.05;
+            letter-spacing: -2.5px;
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .hero h1 span {
+            color: #818cf8;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: 22px auto 0;
+            color: #94a3b8;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        /* MAIN CARD */
+
+        .main-card {
+            background: #0e1320;
+            border: 1px solid #20283a;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .section-description {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* UPLOAD */
+
+        .upload-area {
+            border: 1px dashed #35415b;
+            background: #0a0f1b;
+            border-radius: 14px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 35px;
+            transition: 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #6366f1;
+            background: #0d1221;
+        }
+
+        .upload-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 15px;
+            border-radius: 14px;
+            background: rgba(99, 102, 241, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .upload-area h3 {
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .upload-area p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            max-width: 400px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* JOBS */
+
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .jobs-count {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .job-card {
+            background: #0a0f1b;
+            border: 1px solid #20283a;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .job-card:first-child {
+            grid-column: span 2;
+        }
+
+        .job-number {
+            color: #818cf8;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .job-card h3 {
+            font-size: 17px;
+            margin-bottom: 18px;
+        }
+
+        .optional {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        label {
+            display: block;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            background: #080c15;
+            color: #f8fafc;
+            border: 1px solid #273249;
+            border-radius: 9px;
+            padding: 12px 13px;
+            font: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        textarea {
+            min-height: 145px;
+            resize: vertical;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #475569;
+        }
+
+        /* BUTTON */
+
+        .submit-area {
+            margin-top: 28px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 13px 24px;
+            background: #6366f1;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+        }
+
+        button:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #475569;
+            font-size: 12px;
+            border-top: 1px solid #151c2b;
+        }
+
+        @media (max-width: 700px) {
+            .hero {
+                padding-top: 55px;
+            }
+
+            .hero h1 {
+                letter-spacing: -1.5px;
+            }
+
+            .main-card {
+                padding: 20px;
+            }
+
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .job-card:first-child {
+                grid-column: span 1;
+            }
+
+            .nav-badge {
+                display: none;
+            }
+
+            .submit-area {
+                justify-content: stretch;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>Resume Job Matcher</h1>
+<nav>
+    <div class="nav-content">
+        <div class="logo">
+            Resume<span>Match</span>
+        </div>
 
-    <p>
-        Compare your resume against multiple job descriptions.
-    </p>
+        <div class="nav-badge">
+            Resume Intelligence
+        </div>
+    </div>
+</nav>
 
-    <form action="/compare" method="POST" enctype="multipart/form-data">
+<main class="container">
 
-        <label for="resume">Upload Resume (PDF):</label>
-        <br>
+    <section class="hero">
 
-        <input
-            type="file"
-            id="resume"
-            name="resume"
-            accept=".pdf"
-            required
-        >
+        <div class="badge">
+            AI-free • Rule-based skill analysis
+        </div>
 
-        <br><br>
+        <h1>
+            Match your resume with
+            <span>the right opportunity.</span>
+        </h1>
 
-        <h2>Job 1</h2>
+        <p>
+            Analyze your skills against multiple job descriptions
+            and instantly identify where you match and where you have gaps.
+        </p>
 
-        <label for="job1_title">Job Title:</label>
-        <br>
+    </section>
 
-        <input
-            type="text"
-            id="job1_title"
-            name="job1_title"
-            placeholder="e.g. Python Developer"
-            required
-        >
 
-        <br><br>
+    <form
+        action="/compare"
+        method="POST"
+        enctype="multipart/form-data"
+    >
 
-        <label for="job1">Job Description:</label>
-        <br>
+        <div class="main-card">
 
-        <textarea
-            id="job1"
-            name="job1"
-            rows="8"
-            cols="60"
-            placeholder="Paste the first job description here..."
-            required
-        ></textarea>
+            <h2 class="section-title">
+                Resume & Job Analysis
+            </h2>
 
-        <br><br>
+            <p class="section-description">
+                Upload your resume and add up to three job descriptions.
+            </p>
 
-        <h2>Job 2</h2>
 
-        <label for="job2_title">Job Title:</label>
-        <br>
+            <!-- RESUME -->
 
-        <input
-            type="text"
-            id="job2_title"
-            name="job2_title"
-            placeholder="e.g. Data Analyst"
-        >
+            <div class="upload-area">
 
-        <br><br>
+                <div class="upload-icon">
+                    ↑
+                </div>
 
-        <label for="job2">Job Description:</label>
-        <br>
+                <h3>
+                    Upload your resume
+                </h3>
 
-        <textarea
-            id="job2"
-            name="job2"
-            rows="8"
-            cols="60"
-            placeholder="Paste the second job description here..."
-        ></textarea>
+                <p>
+                    PDF format only
+                </p>
 
-        <br><br>
+                <input
+                    type="file"
+                    id="resume"
+                    name="resume"
+                    accept=".pdf"
+                    required
+                >
 
-        <h2>Job 3</h2>
+            </div>
 
-        <label for="job3_title">Job Title:</label>
-        <br>
 
-        <input
-            type="text"
-            id="job3_title"
-            name="job3_title"
-            placeholder="e.g. Frontend Developer"
-        >
+            <!-- JOBS -->
 
-        <br><br>
+            <div class="jobs-header">
 
-        <label for="job3">Job Description:</label>
-        <br>
+                <div>
+                    <h2 class="section-title">
+                        Job descriptions
+                    </h2>
+                </div>
 
-        <textarea
-            id="job3"
-            name="job3"
-            rows="8"
-            cols="60"
-            placeholder="Paste the third job description here..."
-        ></textarea>
+                <div class="jobs-count">
+                    Up to 3 jobs
+                </div>
 
-        <br><br>
+            </div>
 
-        <button type="submit">Compare Jobs</button>
+
+            <div class="jobs-grid">
+
+
+                <!-- JOB 1 -->
+
+                <div class="job-card">
+
+                    <div class="job-number">
+                        Job 01
+                    </div>
+
+                    <h3>
+                        Primary opportunity
+                    </h3>
+
+                    <div class="field">
+
+                        <label for="job1_title">
+                            Job title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="job1_title"
+                            name="job1_title"
+                            placeholder="Python Developer"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="field">
+
+                        <label for="job1">
+                            Job description
+                        </label>
+
+                        <textarea
+                            id="job1"
+                            name="job1"
+                            placeholder="Paste the job description here..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- JOB 2 -->
+
+                <div class="job-card">
+
+                    <div class="job-number">
+                        Job 02
+                    </div>
+
+                    <h3>
+                        Alternative opportunity
+                        <span class="optional">(Optional)</span>
+                    </h3>
+
+                    <div class="field">
+
+                        <label for="job2_title">
+                            Job title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="job2_title"
+                            name="job2_title"
+                            placeholder="Data Analyst"
+                        >
+
+                    </div>
+
+                    <div class="field">
+
+                        <label for="job2">
+                            Job description
+                        </label>
+
+                        <textarea
+                            id="job2"
+                            name="job2"
+                            placeholder="Paste the job description here..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- JOB 3 -->
+
+                <div class="job-card">
+
+                    <div class="job-number">
+                        Job 03
+                    </div>
+
+                    <h3>
+                        Another opportunity
+                        <span class="optional">(Optional)</span>
+                    </h3>
+
+                    <div class="field">
+
+                        <label for="job3_title">
+                            Job title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="job3_title"
+                            name="job3_title"
+                            placeholder="Frontend Developer"
+                        >
+
+                    </div>
+
+                    <div class="field">
+
+                        <label for="job3">
+                            Job description
+                        </label>
+
+                        <textarea
+                            id="job3"
+                            name="job3"
+                            placeholder="Paste the job description here..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="submit-area">
+
+                <button type="submit">
+                    Analyze Job Matches →
+                </button>
+
+            </div>
+
+        </div>
 
     </form>
+
+</main>
+
+
+<footer>
+    ResumeMatch · Resume Job Skill Matching System
+</footer>
 
 </body>
 </html>
