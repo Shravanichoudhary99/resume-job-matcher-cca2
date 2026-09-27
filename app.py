@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 
+from services.pdf_extractor import extract_text_from_pdf
+
 app = Flask(__name__)
 
 
@@ -19,9 +21,14 @@ def analyze():
     if not job_description:
         return "Job description is required", 400
 
+    resume_text = extract_text_from_pdf(resume)
+
+    if not resume_text:
+        return "Could not extract text from the PDF", 400
+
     return (
-        f"Resume received: {resume.filename}<br>"
-        f"Job description received successfully."
+        f"Resume received: {resume.filename}<br><br>"
+        f"Extracted text:<br><pre>{resume_text}</pre>"
     )
 
 
