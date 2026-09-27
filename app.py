@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, jsonify, render_template, request
 
 from services.pdf_extractor import extract_text_from_pdf
@@ -6,6 +8,16 @@ from services.matcher import match_skills
 
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def inject_commit_id():
+    return {
+        "commit_id": os.environ.get(
+            "RENDER_GIT_COMMIT",
+            "local"
+        )
+    }
 
 
 @app.route("/")
