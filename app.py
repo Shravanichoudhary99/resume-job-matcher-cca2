@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 from services.pdf_extractor import extract_text_from_pdf
 from services.skill_extractor import extract_skills
+from services.matcher import match_skills
 
 app = Flask(__name__)
 
@@ -30,10 +31,13 @@ def analyze():
     resume_skills = extract_skills(resume_text)
     job_skills = extract_skills(job_description)
 
+    analysis = match_skills(resume_skills, job_skills)
+
     return (
         f"Resume received: {resume.filename}<br><br>"
-        f"Resume skills:<br><pre>{resume_skills}</pre><br>"
-        f"Job description skills:<br><pre>{job_skills}</pre>"
+        f"Matched skills: {analysis['matched']}<br>"
+        f"Missing skills: {analysis['missing']}<br>"
+        f"Match percentage: {analysis['match_percentage']}%"
     )
 
 
